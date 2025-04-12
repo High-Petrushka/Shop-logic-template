@@ -1,4 +1,37 @@
-<script setup></script>
+<script setup>
+import { reactive } from "vue";
+import useUsers from "../composables/useUsers";
+
+const local = reactive({
+  inpName: "",
+  inpPassword: "",
+  checked: "",
+  isError: false,
+});
+
+function clearInp() {
+  local.inpName = "";
+  local.inpPassword = "";
+}
+
+function clearError() {
+  local.isError = false;
+}
+
+function handleError(error) {
+  switch (error) {
+    case "Correct":
+      console.log("Correct");
+      break;
+    case "PasswordError":
+      console.log("PasswordError");
+      break;
+    case "LoginError":
+      console.log("LoginError");
+      break;
+  }
+}
+</script>
 
 <template>
   <div class="cont">
@@ -10,16 +43,24 @@
         <div class="input__box">
           <div class="field__cont">
             <h3 class="inp__title">User name</h3>
-            <input class="static__inp" type="text" autocomplete="off" data-1p-ignore />
+            <input class="static__inp" type="text" autocomplete="off" data-1p-ignore v-model="local.inpName"
+              @input="clearError" />
           </div>
           <div class="field__cont">
             <h3 class="inp__title">Password</h3>
             <input class="static__inp" type="password" autocomplete="off" data-1p-ignore data-lpignore="true"
-              data-protonpass-ignore="true" />
+              data-protonpass-ignore="true" v-model="local.inpPassword" @input="clearError" />
           </div>
         </div>
         <div class="button__box">
-          <button class="reversed__btn">Log in</button>
+          <button class="reversed__btn" @click.prevent="
+            handleError(
+              useUsers().compareUser(local.inpName, local.inpPassword),
+            );
+          clearInp();
+          ">
+            Log in
+          </button>
         </div>
         <div class="reg__box">
           <p class="reg__quest">
