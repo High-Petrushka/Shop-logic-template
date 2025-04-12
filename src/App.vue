@@ -1,4 +1,5 @@
 <script setup>
+import { RouterView } from "vue-router";
 import HeaderMenu from "./components/HeaderMenu.vue";
 </script>
 
@@ -7,7 +8,9 @@ import HeaderMenu from "./components/HeaderMenu.vue";
     <HeaderMenu />
   </header>
 
-  <main></main>
+  <main>
+    <RouterView />
+  </main>
 
   <footer></footer>
 </template>

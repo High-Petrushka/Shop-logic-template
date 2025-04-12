@@ -29,8 +29,6 @@ import { RouterLink } from "vue-router";
 
   padding: 2rem;
 
-  border: 2px dashed #222;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -56,12 +54,13 @@ import { RouterLink } from "vue-router";
 }
 
 .link__box:hover {
-  border-radius: 0.5rem;
+  transform: translate(0px, -5px);
+  box-shadow: 0px 5px 0px var(--shadow-color);
 }
 
 .menu__link {
   font-size: 1.8rem;
-  font-weight: 550;
+  font-weight: 700;
   color: var(--font-color);
 }
 </style>
