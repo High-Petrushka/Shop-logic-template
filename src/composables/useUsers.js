@@ -2,6 +2,10 @@ import { ref, watch } from "vue";
 
 const userList = ref([]);
 
+const namePattern = /[A-Z][a-z]+/g;
+const passPattern = /[]/g;
+const letterPattern = /[A-Z]/g
+
 try {
   if (localStorage.getItem('users') === null) {
     userList.value.push({
@@ -57,6 +61,55 @@ function compareUser(userName, userPass) {
   return "LoginError";
 }
 
+function checkLen(userData) {
+  let answer = "";
+
+  if (userData.length < 4) {
+    answer = "TooShortError";
+  } else if (userData.length > 10) {
+    answer = "TooLongError";
+  } else {
+    answer = "OK";
+  }
+
+  return answer;
+
+}
+
+function findSpace(testStr) {
+
+  for (let i = 0; i < testStr.length; i++) {
+    if (testStr.charAt(i) == " ") {
+      return "SpaceError";
+    }
+  }
+
+  return "SignError";
+}
+
+function validateName(dataStr) {
+  if (dataStr.length === 0) {
+    return "EmptyError";
+  } else {
+    const len = checkLen(dataStr);
+    if (len != "OK") {
+      return len;
+    } else {
+      const patternCheck = dataStr.match(namePattern);
+      if (!patternCheck || patternCheck[0].length < dataStr.length) {
+        if (letterPattern.test(dataStr.charAt(0)) == false) {
+          return "LetterError";
+        } else {
+          const isSpace = findSpace(dataStr);
+          return isSpace;
+        }
+      } else {
+        return "OK";
+      }
+    }
+  }
+}
+
 function findUserIndex(id) {
   for (let i = 0; i < userList.value.length; i++) {
     if (userList.value[i].id == id) {
@@ -66,5 +119,5 @@ function findUserIndex(id) {
 }
 
 export default function useUsers() {
-  return { userList, addUser, delUser, compareUser };
+  return { userList, addUser, delUser, compareUser, validateName, };
 }

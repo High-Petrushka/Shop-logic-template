@@ -1,13 +1,17 @@
 <script setup>
 import { reactive } from "vue";
 import useUsers from "../composables/useUsers";
+import { useRouter } from "vue-router";
 
 const local = reactive({
   inpName: "",
   inpPassword: "",
   checked: "",
   isError: false,
+  errorHeight: "0px",
 });
+
+const router = useRouter();
 
 function clearInp() {
   local.inpName = "";
@@ -16,9 +20,17 @@ function clearInp() {
 
 function clearError() {
   local.isError = false;
+  local.errorHeight = "0px";
 }
 
 function handleError(error) {
+  if (error == "Correct") {
+    router.push({ name: "User" });
+  } else {
+    local.isError = true;
+    local.errorHeight = "21px";
+  }
+
   switch (error) {
     case "Correct":
       console.log("Correct");
@@ -43,13 +55,17 @@ function handleError(error) {
         <div class="input__box">
           <div class="field__cont">
             <h3 class="inp__title">User name</h3>
-            <input class="static__inp" type="text" autocomplete="off" data-1p-ignore v-model="local.inpName"
-              @input="clearError" />
+            <input class="static__inp" :class="{ error__inp: local.isError }" type="text" autocomplete="off"
+              data-1p-ignore v-model="local.inpName" @input="clearError" />
           </div>
           <div class="field__cont">
             <h3 class="inp__title">Password</h3>
-            <input class="static__inp" type="password" autocomplete="off" data-1p-ignore data-lpignore="true"
-              data-protonpass-ignore="true" v-model="local.inpPassword" @input="clearError" />
+            <input class="static__inp" :class="{ error__inp: local.isError }" type="password" autocomplete="off"
+              data-1p-ignore data-lpignore="true" data-protonpass-ignore="true" v-model="local.inpPassword"
+              @input="clearError" />
+          </div>
+          <div class="error__cont" :style="{ height: local.errorHeight }">
+            <p class="error__text">Incorrect login or password</p>
           </div>
         </div>
         <div class="button__box">
@@ -111,6 +127,16 @@ function handleError(error) {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+.error__cont {
+  height: 0px;
+  overflow: hidden;
+
+  display: flex;
+  justify-content: center;
+
+  transition: height 0.5s ease;
 }
 
 .button__box {
