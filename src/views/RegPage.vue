@@ -5,19 +5,58 @@ import useUsers from "../composables/useUsers";
 const local = reactive({
   inpName: "",
   inpPassword: "",
-  isError: false,
+  isError: { name: false, pass: false },
+  nameError: "",
+  passError: "",
+  errorHeight: { name: "0px", pass: "0px" },
 });
 
 const check = ref("");
 
+function compareError(code) {
+  let answer = "";
+
+  switch (code) {
+    case "EmptyError":
+      answer = "Required to be filled!";
+      break;
+    case "TooShortError":
+      answer = "Has to include at least 4 letters!";
+      break;
+    case "TooLongError":
+      answer = "Hasn't to be longer than 10 letters!";
+      break;
+    case "LetterError":
+      answer = "First letter required to be capital!";
+      break;
+    case "SpaceError":
+      answer = "Name shouldn't include any spaces!";
+      break;
+  }
+
+  return answer;
+}
+
 function checkName(userName) {
   const answer = useUsers().validateName(userName);
+
+  console.log(answer);
 
   if (answer == "OK") {
     check.value = answer;
   } else {
     check.value = answer;
+    local.nameError = compareError(answer);
+    local.isError.name = true;
+    local.errorHeight.name = "21px";
   }
+}
+
+function clearNameError() {
+  console.log("Clear");
+  local.isError.name = false;
+  local.nameError = "";
+  local.errorHeight.name = "0px";
 }
 </script>
 
@@ -26,20 +65,25 @@ function checkName(userName) {
     <div class="wrapper">
       <form class="reg__form">
         <div class="title__box">
-          <h1>Sign up {{ check }}</h1>
+          <h1>Sign up</h1>
         </div>
         <div class="input__box">
           <div class="field__cont">
             <h3 class="inp__title">User name</h3>
-            <input class="static__inp" type="text" autocomplete="off" data-1p-ignore data-lpignore="true"
-              data-protonpass-ignore="true" v-model="local.inpName" />
-            <div class="error__box"></div>
+            <input class="static__inp" :class="{ error__inp: local.isError.name }" @input="clearNameError" type="text"
+              autocomplete="off" data-1p-ignore data-lpignore="true" data-protonpass-ignore="true"
+              v-model="local.inpName" />
+            <div class="error__box" :style="{ height: local.errorHeight.name }">
+              <p class="error__text">{{ local.nameError }}</p>
+            </div>
           </div>
           <div class="field__cont">
             <h3 class="inp__title">Password</h3>
             <input class="static__inp" type="Password" autocomplete="off" data-1p-ignore data-lpignore="true"
               data-protonpass-ignore="true" v-model="local.inpPassword" />
-            <div class="error__box"></div>
+            <div class="error__box" :style="{ height: local.errorHeight.pass }">
+              {{ local.passError }}
+            </div>
           </div>
         </div>
         <div class="button__box">
@@ -79,6 +123,17 @@ function checkName(userName) {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  margin-bottom: 0.2rem;
+}
+
+.error__box {
+  width: 100%;
+  height: 2.1rem;
+
+  text-align: center;
+  overflow: hidden;
+
+  transition: height 0.5s ease;
 }
 
 .button__box {

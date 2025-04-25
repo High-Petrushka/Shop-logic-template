@@ -96,10 +96,15 @@ function validateName(dataStr) {
       return len;
     } else {
       const patternCheck = dataStr.match(namePattern);
+      console.log(dataStr.charAt(0))
+      //console.log(letterPattern.test(dataStr.charAt(0)))
       if (!patternCheck || patternCheck[0].length < dataStr.length) {
-        if (letterPattern.test(dataStr.charAt(0)) == false) {
+        if (letterPattern.test(dataStr[0]) == false) {
+          // console.log(letterPattern.test(dataStr[0]));
+          
           return "LetterError";
         } else {
+          // console.log(letterPattern.test(dataStr[0]));
           const isSpace = findSpace(dataStr);
           return isSpace;
         }
