@@ -1,5 +1,7 @@
 <script setup>
-import { ref, reactive } from "vue";
+import { useRouter } from "vue-router";
+import { reactive } from "vue";
+
 import useUsers from "../composables/useUsers";
 
 const local = reactive({
@@ -9,9 +11,11 @@ const local = reactive({
   nameError: "",
   passError: "",
   errorHeight: { name: "0px", pass: "0px" },
+  changeRoute: 0,
 });
 
-const check = ref("");
+const router = useRouter();
+const addNewUser = useUsers().addUser();
 
 function compareError(code) {
   let answer = "";
@@ -21,10 +25,10 @@ function compareError(code) {
       answer = "Required to be filled!";
       break;
     case "TooShortError":
-      answer = "Has to include at least 4 letters!";
+      answer = "Has to include at least 4 signs!";
       break;
     case "TooLongError":
-      answer = "Hasn't to be longer than 10 letters!";
+      answer = "Hasn't to be longer than 10 signs!";
       break;
     case "LetterError":
       answer = "First letter required to be capital!";
@@ -32,6 +36,14 @@ function compareError(code) {
     case "SpaceError":
       answer = "Name shouldn't include any spaces!";
       break;
+    case "NameSignError":
+      answer = "Name should include only letters!";
+      break;
+    case "PassSignError":
+      answer = "Only letters, digits, '!' & '?' marks afforded!";
+      break;
+    case "LackSignError":
+      answer = "Must include a letter, a digit, a '!' & a '?' mark!";
   }
 
   return answer;
@@ -40,23 +52,50 @@ function compareError(code) {
 function checkName(userName) {
   const answer = useUsers().validateName(userName);
 
-  console.log(answer);
-
   if (answer == "OK") {
-    check.value = answer;
+    local.changeRoute++;
   } else {
-    check.value = answer;
     local.nameError = compareError(answer);
     local.isError.name = true;
     local.errorHeight.name = "21px";
+    return 0;
   }
 }
 
-function clearNameError() {
-  console.log("Clear");
-  local.isError.name = false;
-  local.nameError = "";
-  local.errorHeight.name = "0px";
+function checkPass(userPass) {
+  const answer = useUsers().validatePassword(userPass);
+
+  if (answer == "OK") {
+    local.changeRoute++;
+  } else {
+    local.passError = compareError(answer);
+    local.isError.pass = true;
+    local.errorHeight.pass = "21px";
+    return 0;
+  }
+}
+
+function clearError(target) {
+  local.isError[target] = false;
+  local[`${target}Error `] = "";
+  local.errorHeight[target] = "0px";
+}
+
+function checkData() {
+  checkName(local.inpName);
+  checkPass(local.inpPassword);
+
+  if (local.changeRoute == 2) {
+    useUsers().addUser(local.inpName, local.inpPassword);
+
+    local.inpName = "";
+    local.inpPassword = "";
+    local.changeRoute = 0;
+
+    router.push({ name: "Auth" });
+  } else {
+    local.changeRoute = 0;
+  }
 }
 </script>
 
@@ -70,8 +109,8 @@ function clearNameError() {
         <div class="input__box">
           <div class="field__cont">
             <h3 class="inp__title">User name</h3>
-            <input class="static__inp" :class="{ error__inp: local.isError.name }" @input="clearNameError" type="text"
-              autocomplete="off" data-1p-ignore data-lpignore="true" data-protonpass-ignore="true"
+            <input class="static__inp" :class="{ error__inp: local.isError.name }" @input="clearError('name')"
+              type="text" autocomplete="off" data-1p-ignore data-lpignore="true" data-protonpass-ignore="true"
               v-model="local.inpName" />
             <div class="error__box" :style="{ height: local.errorHeight.name }">
               <p class="error__text">{{ local.nameError }}</p>
@@ -79,15 +118,16 @@ function clearNameError() {
           </div>
           <div class="field__cont">
             <h3 class="inp__title">Password</h3>
-            <input class="static__inp" type="Password" autocomplete="off" data-1p-ignore data-lpignore="true"
-              data-protonpass-ignore="true" v-model="local.inpPassword" />
+            <input class="static__inp" :class="{ error__inp: local.isError.pass }" @input="clearError('pass')"
+              type="Password" autocomplete="off" data-1p-ignore data-lpignore="true" data-protonpass-ignore="true"
+              v-model="local.inpPassword" />
             <div class="error__box" :style="{ height: local.errorHeight.pass }">
-              {{ local.passError }}
+              <p class="error__text">{{ local.passError }}</p>
             </div>
           </div>
         </div>
         <div class="button__box">
-          <button class="reversed__btn" @click.prevent="checkName(local.inpName)">
+          <button class="reversed__btn" @click.prevent="checkData">
             Sign up
           </button>
         </div>
