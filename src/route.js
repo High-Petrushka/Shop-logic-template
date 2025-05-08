@@ -8,7 +8,7 @@ import ShopPage from "./views/ShopPage.vue";
 const routes = [
   { path: '/', component: AuthPage, name: "Auth" },
   { path: '/registration', component: RegPage, name: "Reg" },
-  { path: '/user', component: UserPage, name: "User" },
+  { path: '/user/:name', component: UserPage, name: "User" },
   { path: '/shop', component: ShopPage, name: "Shop" },
 ];
 

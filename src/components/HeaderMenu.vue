@@ -15,7 +15,7 @@ import { RouterLink } from "vue-router";
       </div>
       <div class="links">
         <div class="link__box">
-          <RouterLink class="menu__link" :to="{ name: 'User' }">Account</RouterLink>
+          <RouterLink class="menu__link" :to="{ path: `/user/user` }">Account</RouterLink>
         </div>
       </div>
     </nav>

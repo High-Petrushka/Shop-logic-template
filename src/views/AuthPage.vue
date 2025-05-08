@@ -24,8 +24,9 @@ function clearError() {
 }
 
 function handleError(error) {
-  if (error == "Correct") {
-    router.push({ name: "User" });
+  if (error.state == "Correct") {
+    useUsers().setUser(error.userId);
+    router.push({ path: `/user/${local.inpName}` });
   } else {
     local.isError = true;
     local.errorHeight = "21px";
@@ -55,26 +56,44 @@ function handleError(error) {
         <div class="input__box">
           <div class="field__cont">
             <h3 class="inp__title">User name</h3>
-            <input class="static__inp" :class="{ error__inp: local.isError }" type="text" autocomplete="off"
-              data-1p-ignore v-model="local.inpName" @input="clearError" />
+            <input
+              class="static__inp"
+              :class="{ error__inp: local.isError }"
+              type="text"
+              autocomplete="off"
+              data-1p-ignore
+              v-model="local.inpName"
+              @input="clearError"
+            />
           </div>
           <div class="field__cont">
             <h3 class="inp__title">Password</h3>
-            <input class="static__inp" :class="{ error__inp: local.isError }" type="password" autocomplete="off"
-              data-1p-ignore data-lpignore="true" data-protonpass-ignore="true" v-model="local.inpPassword"
-              @input="clearError" />
+            <input
+              class="static__inp"
+              :class="{ error__inp: local.isError }"
+              type="password"
+              autocomplete="off"
+              data-1p-ignore
+              data-lpignore="true"
+              data-protonpass-ignore="true"
+              v-model="local.inpPassword"
+              @input="clearError"
+            />
           </div>
           <div class="error__cont" :style="{ height: local.errorHeight }">
             <p class="error__text">Incorrect login or password</p>
           </div>
         </div>
         <div class="button__box">
-          <button class="reversed__btn" @click.prevent="
-            handleError(
-              useUsers().compareUser(local.inpName, local.inpPassword),
-            );
-          clearInp();
-          ">
+          <button
+            class="reversed__btn"
+            @click.prevent="
+              handleError(
+                useUsers().compareUser(local.inpName, local.inpPassword),
+              );
+              clearInp();
+            "
+          >
             Log in
           </button>
         </div>

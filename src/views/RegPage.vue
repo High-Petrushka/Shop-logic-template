@@ -15,7 +15,6 @@ const local = reactive({
 });
 
 const router = useRouter();
-const addNewUser = useUsers().addUser();
 
 function compareError(code) {
   let answer = "";
@@ -71,7 +70,6 @@ function checkPass(userPass) {
     local.passError = compareError(answer);
     local.isError.pass = true;
     local.errorHeight.pass = "21px";
-    return 0;
   }
 }
 
@@ -109,18 +107,34 @@ function checkData() {
         <div class="input__box">
           <div class="field__cont">
             <h3 class="inp__title">User name</h3>
-            <input class="static__inp" :class="{ error__inp: local.isError.name }" @input="clearError('name')"
-              type="text" autocomplete="off" data-1p-ignore data-lpignore="true" data-protonpass-ignore="true"
-              v-model="local.inpName" />
+            <input
+              class="static__inp"
+              :class="{ error__inp: local.isError.name }"
+              @input="clearError('name')"
+              type="text"
+              autocomplete="off"
+              data-1p-ignore
+              data-lpignore="true"
+              data-protonpass-ignore="true"
+              v-model="local.inpName"
+            />
             <div class="error__box" :style="{ height: local.errorHeight.name }">
               <p class="error__text">{{ local.nameError }}</p>
             </div>
           </div>
           <div class="field__cont">
             <h3 class="inp__title">Password</h3>
-            <input class="static__inp" :class="{ error__inp: local.isError.pass }" @input="clearError('pass')"
-              type="Password" autocomplete="off" data-1p-ignore data-lpignore="true" data-protonpass-ignore="true"
-              v-model="local.inpPassword" />
+            <input
+              class="static__inp"
+              :class="{ error__inp: local.isError.pass }"
+              @input="clearError('pass')"
+              type="Password"
+              autocomplete="off"
+              data-1p-ignore
+              data-lpignore="true"
+              data-protonpass-ignore="true"
+              v-model="local.inpPassword"
+            />
             <div class="error__box" :style="{ height: local.errorHeight.pass }">
               <p class="error__text">{{ local.passError }}</p>
             </div>

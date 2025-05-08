@@ -9,8 +9,8 @@
   --reversed-button-color: #ede9e2;
   --border-color: #1e1411;
   --link-color: #433e3c;
-  --error-color: #A31D1D;
-  --error-color2: #D84040;
+  --error-color: #a31d1d;
+  --error-color2: #d84040;
 
   font-family:
     Mulish,
@@ -167,15 +167,28 @@ button:focus-visible {
   color: var(--font-color);
 }
 
+/*
 .card {
   padding: 2em;
 }
+*/
 
 .cont {
   max-width: 1280px;
   height: fit-content;
 
   margin: 0 auto;
+}
+
+.card {
+  width: fit-content;
+  height: fit-content;
+
+  padding: 7rem;
+
+  background: var(--card-color);
+  border-radius: 4rem;
+  box-shadow: -3.2rem -3.2rem 0rem var(--shadow-color);
 }
 
 #app {

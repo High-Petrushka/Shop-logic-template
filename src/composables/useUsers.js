@@ -1,10 +1,14 @@
 import { ref, watch } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const userList = ref([]);
+const currentUser = ref(null);
 
 const namePattern = /[A-Z][a-z]+/g;
 const passPattern = /^([A-Za-z]|[0-9]|\!|\?)+$/g;
-const letterPattern = /[A-Z]/
+const letterPattern = /[A-Z]/;
 
 try {
   if (localStorage.getItem('users') === null) {
@@ -28,7 +32,13 @@ try {
 
 watch(userList, (newValue) => {
   localStorage.setItem('users', JSON.stringify(newValue));
-});
+  console.log("User has benn add");
+}, { deep: true });
+
+watch(currentUser, (userToSet) => {
+  localStorage.setItem('curUser', JSON.stringify(userToSet))
+  console.log("User has been set");
+}, { deep: true });
 
 function addUser(userName, userPass) {
   let userId = userList.value[userList.value.length - 1].id + 1;
@@ -41,19 +51,37 @@ function addUser(userName, userPass) {
   });
 }
 
+function setUser(userId) {
+  currentUser.value = userId;
+}
+
+function getCurUserId() {
+  return JSON.parse(localStorage.getItem("curUser"));
+}
+
+function getUser(userId) {
+  let index = findUserIndex(userId);
+
+  return userList.value[index];
+}
+
 function delUser(userId) {
   let index = findUserIndex(userId);
 
   userList.value.splice(index, 1);
 }
 
+function quit() {
+  currentUser.value = null;
+}
+
 function compareUser(userName, userPass) {
   for (let i = 0; i < userList.value.length; i++) {
     if (userList.value[i].name == userName) {
       if (userList.value[i].password == userPass) {
-        return "Correct";
+        return { state: "Correct", userId: userList.value[i].id };
       } else {
-        return "PasswordError";
+        return { state: "PasswordError", userId: null };
       }
     }
   }
@@ -156,5 +184,5 @@ function findUserIndex(id) {
 }
 
 export default function useUsers() {
-  return { userList, addUser, delUser, compareUser, validateName, validatePassword, };
+  return { userList, addUser, delUser, compareUser, validateName, validatePassword, setUser, getUser, getCurUserId, quit };
 }
